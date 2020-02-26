@@ -29,4 +29,22 @@ let server = http.createServer(function (request, response) {
         response.end();
     }
 });
+
+const mysql = require ('mysql')
+const db = mysql.createConnection({
+    host: 'localhost',
+    database:'nodejs',
+    user: 'root',
+    password:''
+})
+db.connect((err) =>{
+    if (err)
+        console.log(err.message)
+    else
+        console.log('Connected')
+})
+
+
+
+
 server.listen(8080);
