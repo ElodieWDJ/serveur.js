@@ -54,10 +54,10 @@ function signInUser(user_value, password_value) {
       let  inserts  = [ user_value ,  password_value ] ;  
       sql  = mysql.format ( sql ,  inserts ) ; 
       db.query(sql, (err, result) => {//fonction de callback par rapport à notre requête
-        if (err)
-          return false;
-        else
+        if (user_value == password_value)
           return true;
+        else(err)
+          return false;
       }
 
       )
