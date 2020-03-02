@@ -1,6 +1,8 @@
 let http = require('http');
 let url = require('url');
 
+let resultatMathieu = false;
+
 let server = http.createServer(function (request, response) {
 
 
@@ -9,10 +11,13 @@ let server = http.createServer(function (request, response) {
   if (request.method == "GET") {
     response.setHeader('Access-Control-Allow-Origin', '*');
     console.log("get");
+
+    
+
     if (signInUser(queryObject.user, queryObject.password)) {
       console.log("---- 200")
       response.writeHead(200, { "content-Type": "json" });
-      response.write('{"token":"01","user":"Jean", "role":"admin", "langue":"fr"}');
+      response.write('{"token":"01","user":"Sergio", "role":"admin", "langue":"fr"}');
       response.end();
     }
 
@@ -31,39 +36,85 @@ let server = http.createServer(function (request, response) {
 });
 
 //Connexion à la base de données
-const mysql = require('mysql')
+const mysql = require('mysql2');
+const express = require('express');
+
+const app = express();
+const port = 3000;
+
 const db = mysql.createConnection({
   host: 'localhost',
+  port: 3306,
   database: 'nodejs',
   user: 'root',
   password: ''
 })
 
 // sign user method
-function signInUser(user_value, password_value) {
-  // if (user_value == 'jean.jean@jean.com' && password_value == 'jean') {
-  //   return true;
-  // } else {
-  //   return false
-  // }
-  db.connect((err) => {
-    if (err)
-      return (err.message)
-    else {
-      let  sql  = "SELECT * FROM users WHERE user  = ? AND password = ?"; 
-      let  inserts  = [ user_value ,  password_value ] ;  
-      sql  = mysql.format ( sql ,  inserts ) ; 
-      db.query(sql, (err, result) => {//fonction de callback par rapport à notre requête
-        if (err)
-          return false;
-        else
-          return true;
-      }
+function signInUser() {
 
-      )
+  db.connect((err) => {
+    if (err){
+      console.log('BORDEL DE MERDE')
+      return (err.message)
+    }
+    else {
+      
+      app.get('/login', async (req, res) => {
+        let result = await connectionDb.promise().query(
+          'SELECT * FROM Users WHERE user = ? AND password = ?',
+          [req.query.user, req.query.password]
+        );
+          console.log(result)
+        if (result[0].length) {
+          console.log(result[0])
+          res.sendStatus(200);
+        } else {
+          console.log('ho putain')
+          res.sendStatus(401);
+        };
+      })
     };
-  })
+  } 
+  )
+
+  return true
 };
+  
+ 
+
+
+ //app.listen(port,()=>console.log('Server linstening on port 3000'));
+
+
+
+
+
+// if (user_value == 'jean.jean@jean.com' && password_value == 'jean') {
+//   return true;
+// } else {
+//   return false
+// }
+
+
+// db.connect((err) => {
+//   if (err)
+//     return (err.message)
+//   else {
+//     let  sql  = "SELECT * FROM users WHERE user  = ? AND password = ?"; 
+//     let  inserts  = [ user_value ,  password_value ] ;  
+//     sql  = mysql.format ( sql ,  inserts ) ; 
+//     db.query(sql, (err, result) => {//fonction de callback par rapport à notre requête
+//       if (err)
+//         return false;
+//       else
+//         return true;
+//     }
+
+//     )
+//   };
+// })
+
 // db connexion
 
 // select dans la table user (user et password)

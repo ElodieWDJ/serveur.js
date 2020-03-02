@@ -4,7 +4,8 @@
   "description": "",
   "main": "serveur.js",
   "dependencies": {
-    "mysql": "^2.18.1"
+    "express": "^4.17.1",
+    "mysql2": "^2.1.0"
   },
   "devDependencies": {},
   "scripts": {
