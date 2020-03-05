@@ -1,6 +1,10 @@
 let http = require('http');
 let url = require('url');
 
+/**Fonction createServer qui prend en paramètre une fonction anonyme qui elle-même prend en paramètre
+ * request et response.Cette fonction anonyme fait appel à la méthode GET ainsi qu'à la fonction signInUser.
+ */
+
 let server = http.createServer(
 	function (request, response) {
 
@@ -22,7 +26,7 @@ let server = http.createServer(
 	}
 
 );
-
+/**Fonction qui gére les réponses */
 function gere(response, b, user) {
 	if (b) {
 		reussite(response, user);
@@ -31,13 +35,15 @@ function gere(response, b, user) {
 	}
 }
 
-
+/**Fonction qui gére la connexion utilisateur réussie
+ */
 function reussite(response, user) {
 	console.log("---- 200")
 	response.writeHead(200, { "content-Type": "json" });
 	response.write('{"token":"","user":"' + user + '", "role":"", "langue":""}');
 	response.end();
 }
+/**Fonction qui gére l'échec connexion */
 function echec(response) {
 	console.log("---- 401");
 	response.writeHead(401, { "content-type": "json" });
@@ -45,7 +51,7 @@ function echec(response) {
 	response.end();
 }
 
-
+/**Fonction de connexion de l'utilisateur */
 // sign user method
 function signInUser(mail_value, password_value) {
 
@@ -62,6 +68,7 @@ function signInUser(mail_value, password_value) {
 	let inserts = [mail_value, password_value];
 	sql = mysql.format(sql, inserts);
 
+/**Promesse de requête de connexion */
 	return new Promise((resolve) => {
 		connexion.query(sql, function (error, results, fields) {
 			if (error) throw error;
